@@ -62,17 +62,31 @@ class Repeater extends Field implements Contracts\CanConcealComponents, Contract
 
     protected ?Closure $modifyAddActionUsing = null;
 
+    protected ?Closure $modifyAddActionVisibilityUsing = null;
+
     protected ?Closure $modifyAddBetweenActionUsing = null;
+
+    protected ?Closure $modifyAddBetweenActionVisibilityUsing = null;
 
     protected ?Closure $modifyCloneActionUsing = null;
 
+    protected ?Closure $modifyCloneActionVisibilityUsing = null;
+
     protected ?Closure $modifyDeleteActionUsing = null;
+
+    protected ?Closure $modifyDeleteActionVisibilityUsing = null;
 
     protected ?Closure $modifyMoveDownActionUsing = null;
 
+    protected ?Closure $modifyMoveDownActionVisibilityUsing = null;
+
     protected ?Closure $modifyMoveUpActionUsing = null;
 
+    protected ?Closure $modifyMoveUpActionVisibilityUsing = null;
+
     protected ?Closure $modifyReorderActionUsing = null;
+
+    protected ?Closure $modifyReorderActionVisibilityUsing = null;
 
     protected ?Closure $modifyCollapseActionUsing = null;
 
@@ -188,7 +202,15 @@ class Repeater extends Field implements Contracts\CanConcealComponents, Contract
             })
             ->button()
             ->size(ActionSize::Small)
-            ->visible(fn (Repeater $component): bool => $component->isAddable());
+            ->visible(function (Repeater $component, $state, $arguments): bool {
+                if ($this->modifyAddActionVisibilityUsing) {
+                    return $this->evaluate($this->modifyAddActionVisibilityUsing, [
+                        'state' => $state[$arguments['item']],
+                    ]) ?? $component->isAddable();
+                }
+
+                return $component->isAddable();
+            });
 
         if ($this->modifyAddActionUsing) {
             $action = $this->evaluate($this->modifyAddActionUsing, [
@@ -263,7 +285,15 @@ class Repeater extends Field implements Contracts\CanConcealComponents, Contract
             })
             ->button()
             ->size(ActionSize::Small)
-            ->visible(false);
+            ->visible(function ($state, $arguments): bool {
+                if ($this->modifyAddBetweenActionVisibilityUsing) {
+                    return $this->evaluate($this->modifyAddBetweenActionVisibilityUsing, [
+                        'state' => $state[$arguments['item']],
+                    ]) ?? false;
+                }
+
+                return false;
+            });
 
         if ($this->modifyAddBetweenActionUsing) {
             $action = $this->evaluate($this->modifyAddBetweenActionUsing, [
@@ -323,7 +353,15 @@ class Repeater extends Field implements Contracts\CanConcealComponents, Contract
             })
             ->iconButton()
             ->size(ActionSize::Small)
-            ->visible(fn (Repeater $component): bool => $component->isCloneable());
+            ->visible(function (Repeater $component, $state, $arguments): bool {
+                if ($this->modifyCloneActionVisibilityUsing) {
+                    return $this->evaluate($this->modifyCloneActionVisibilityUsing, [
+                        'state' => $state[$arguments['item']],
+                    ]) ?? $component->isCloneable();
+                }
+
+                return $component->isCloneable();
+            });
 
         if ($this->modifyCloneActionUsing) {
             $action = $this->evaluate($this->modifyCloneActionUsing, [
@@ -362,7 +400,15 @@ class Repeater extends Field implements Contracts\CanConcealComponents, Contract
             })
             ->iconButton()
             ->size(ActionSize::Small)
-            ->visible(fn (Repeater $component): bool => $component->isDeletable());
+            ->visible(function (Repeater $component, $state, $arguments): bool {
+                if ($this->modifyDeleteActionVisibilityUsing) {
+                    return $this->evaluate($this->modifyDeleteActionVisibilityUsing, [
+                        'state' => $state[$arguments['item']],
+                    ]) ?? $component->isDeletable();
+                }
+
+                return $component->isDeletable();
+            });
 
         if ($this->modifyDeleteActionUsing) {
             $action = $this->evaluate($this->modifyDeleteActionUsing, [
@@ -400,7 +446,15 @@ class Repeater extends Field implements Contracts\CanConcealComponents, Contract
             })
             ->iconButton()
             ->size(ActionSize::Small)
-            ->visible(fn (Repeater $component): bool => $component->isReorderable());
+            ->visible(function (Repeater $component, $state, $arguments): bool {
+                if ($this->modifyMoveDownActionVisibilityUsing) {
+                    return $this->evaluate($this->modifyMoveDownActionVisibilityUsing, [
+                        'state' => $state[$arguments['item']],
+                    ]) ?? $component->isReorderable();
+                }
+
+                return $component->isReorderable();
+            });
 
         if ($this->modifyMoveDownActionUsing) {
             $action = $this->evaluate($this->modifyMoveDownActionUsing, [
@@ -438,7 +492,15 @@ class Repeater extends Field implements Contracts\CanConcealComponents, Contract
             })
             ->iconButton()
             ->size(ActionSize::Small)
-            ->visible(fn (Repeater $component): bool => $component->isReorderable());
+            ->visible(function (Repeater $component, $state, $arguments): bool {
+                if ($this->modifyMoveUpActionVisibilityUsing) {
+                    return $this->evaluate($this->modifyMoveUpActionVisibilityUsing, [
+                        'state' => $state[$arguments['item']],
+                    ]) ?? $component->isReorderable();
+                }
+
+                return $component->isReorderable();
+            });
 
         if ($this->modifyMoveUpActionUsing) {
             $action = $this->evaluate($this->modifyMoveUpActionUsing, [
@@ -1287,5 +1349,54 @@ class Repeater extends Field implements Contracts\CanConcealComponents, Contract
     public function getRawItemState(string $uuid): array
     {
         return $this->getChildComponentContainer($uuid)->getRawState();
+    }
+
+    public function addActionVisibility(Closure $condition): static
+    {
+        $this->modifyAddActionVisibilityUsing = $condition;
+
+        return $this;
+    }
+
+    public function addBetweenActionVisibility(Closure $condition): static
+    {
+        $this->modifyAddBetweenActionVisibilityUsing = $condition;
+
+        return $this;
+    }
+
+    public function cloneActionVisibility(Closure $condition): static
+    {
+        $this->modifyCloneActionVisibilityUsing = $condition;
+
+        return $this;
+    }
+
+    public function deleteActionVisibility(Closure $condition): static
+    {
+        $this->modifyDeleteActionVisibilityUsing = $condition;
+
+        return $this;
+    }
+
+    public function moveDownActionVisibility(Closure $condition): static
+    {
+        $this->modifyMoveDownActionVisibilityUsing = $condition;
+
+        return $this;
+    }
+
+    public function moveUpActionVisibility(Closure $condition): static
+    {
+        $this->modifyMoveUpActionVisibilityUsing = $condition;
+
+        return $this;
+    }
+
+    public function reorderActionVisibility(Closure $condition): static
+    {
+        $this->modifyReorderActionVisibilityUsing = $condition;
+
+        return $this;
     }
 }
