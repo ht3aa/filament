@@ -262,6 +262,7 @@ Repeater::make('qualifications')
     ->orderColumn('sort')
 ```
 
+
 If you use something like [`spatie/eloquent-sortable`](https://github.com/spatie/eloquent-sortable) with an order column such as `order_column`, you may pass this in to `orderColumn()`:
 
 ```php
@@ -608,6 +609,26 @@ Repeater::make('members')
     ->collapseAllAction(
         fn (Action $action) => $action->label('Collapse all members'),
     )
+```
+
+### Action Visibility
+
+You can modifiy the visibiltiy for (add, add between, delete, clone, move up, move down, reorder) actions by using the related methods:
+
+```php
+use Filament\Forms\Components\Repeater;
+
+Repeater::make('qualifications')
+    ->schema([
+        // ...
+    ])
+    ->addActionVisibility(fn ($state) => // return true or false)
+    ->addBetweenActionVisibility(fn ($state) => // return true or false)
+    ->cloneActionVisibility(fn ($state) => // return true or false)
+    ->deleteActionVisibility(fn ($state) => // return true or false)
+    ->moveDownActionVisibility(fn ($state) => // return true or false)
+    ->moveUpActionVisibility(fn ($state) => // return true or false)
+    ->reorderActionVisibility(fn ($state) => // return true or false)
 ```
 
 ### Confirming repeater actions with a modal
