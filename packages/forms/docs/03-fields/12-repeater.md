@@ -613,7 +613,7 @@ Repeater::make('members')
 
 ### Action Visibility
 
-You can modifiy the visibiltiy for (add, add between, delete, clone, move up, move down, reorder) actions by using the related methods:
+You can modify the visibiltiy for (add, add between, delete, clone, move up, move down, reorder) actions by using the related methods:
 
 ```php
 use Filament\Forms\Components\Repeater;
